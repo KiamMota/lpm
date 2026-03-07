@@ -1,5 +1,6 @@
 #include "curl/curl.h"
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -27,6 +28,16 @@ void help() {
   std::cout << "commands: \n\n"
             << "lazynv  install  <github url> <filename>\n"
             << "lazynv  remove   <filename>\n";
+}
+
+bool msg_question(std::string message) {
+  std::cout << message << " [Y/n] ";
+  std::string inp;
+  std::getline(std::cin, inp);
+
+  if (inp.empty() || inp == "y" || inp == "Y")
+    return true;
+  return false;
 }
 bool github_url_exists(const std::string &url) {
   CURL *curl = curl_easy_init();
@@ -94,21 +105,36 @@ const std::string build_file_string(const char *github_url,
   return str.str();
 }
 
+const std::string build_require(const char *plugin_name) {
+  return "require(plugins." + std::string(plugin_name) + ")";
+}
+void prepend_to_file(const std::string &filepath, const std::string &content) {
+  std::ifstream file_in(filepath);
+  std::stringstream buffer;
+  buffer << file_in.rdbuf();
+  file_in.close();
+
+  std::ofstream file_out(filepath);
+  file_out << content << buffer.str();
+  file_out.close();
+}
 void install_command(std::vector<std::string> &commands) {
-  std::string filename = commands.at(0);
-  std::string plugin_github_url = commands.at(1);
-  std::string filepath = nvim_plugins_path + "/" + filename + ".lua";
+  std::string plugin_github_url = commands.at(0);
+  std::string plugin_name =
+      plugin_github_url.substr(plugin_github_url.rfind('/') + 1);
+  std::string filepath = nvim_plugins_path + "/" + plugin_name + ".lua";
+  if (std::filesystem::exists(filepath)) {
+    std::cout << "plugin already installed!" << std::endl;
+    return;
+  }
 
   std::cout << "installing '" << plugin_github_url << "' in '" << filepath
             << "'..." << std::endl;
 
   if (!github_url_exists(plugin_github_url)) {
-    std::cout << "invalid github url (404)." << std::endl;
-    return;
-  }
-
-  if (commands.size() < 2) {
-    std::cerr << "impossible install!" << std::endl;
+    std::cout
+        << "Error: Could not connect to the provided URL (Status Code: 404)."
+        << std::endl;
     return;
   }
 
@@ -121,8 +147,18 @@ void install_command(std::vector<std::string> &commands) {
   if (file.fail())
     std::cout << "fail to write file: " + filepath << std::endl;
   file.close();
+  std::cout << "installed!" << std::endl;
   std::cout << file_content << std::endl;
   std::cout << "created in: " << filepath << std::endl;
+  if (msg_question("Do you want to insert it into init.lua ?")) {
+    std::ofstream init_lua(nvim_init_file);
+    if (!init_lua.is_open()) {
+      std::cout << "init.lua cannot be open." << std::endl;
+      return;
+    }
+    prepend_to_file(nvim_init_file, build_require(plugin_name.c_str()));
+    std::cout << "done." << std::endl;
+  }
 }
 
 int main(int argn, char **argv) {
@@ -137,7 +173,7 @@ int main(int argn, char **argv) {
     args.push_back(argv[i]);
   }
 
-  if (argn == 4) {
+  if (argn >= 2) {
     if (strcmp(argv[1], "install") == 0) {
       install_command(args);
     }
