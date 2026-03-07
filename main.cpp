@@ -110,12 +110,18 @@ const std::string build_require(const char *plugin_name) {
 }
 void prepend_to_file(const std::string &filepath, const std::string &content) {
   std::ifstream file_in(filepath);
+  if (!file_in.is_open())
+    throw std::runtime_error("failed to open file: " + filepath);
+
   std::stringstream buffer;
   buffer << file_in.rdbuf();
   file_in.close();
 
   std::ofstream file_out(filepath);
-  file_out << content << buffer.str();
+  if (!file_out.is_open())
+    throw std::runtime_error("failed to write file: " + filepath);
+
+  file_out << content << buffer.str(); // novo + original
   file_out.close();
 }
 void install_command(std::vector<std::string> &commands) {
