@@ -38,8 +38,13 @@ int main(int argn, char **argv) {
       return 0;
     }
 
-    if (strcmp(argv[1], "include") == 0) {
-      commands::include(cli::main_args);
+    if (strcmp(argv[1], "activate") == 0) {
+      commands::activate(cli::main_args);
+      return 0;
+    }
+
+    if (strcmp(argv[1], "deactivate") == 0) {
+      commands::deactivate(cli::main_args);
       return 0;
     }
   }
