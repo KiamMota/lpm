@@ -14,10 +14,10 @@ void install_lazy() {
 
   try {
     if (!std::filesystem::exists(base::nvPath.lua_path))
-      std::filesystem::create_directory(base::nvPath.lua_path);
+      std::filesystem::create_directories(base::nvPath.lua_path);
 
     if (!std::filesystem::exists(base::nvPath.config_path))
-      std::filesystem::create_directory(base::nvPath.config_path);
+      std::filesystem::create_directories(base::nvPath.config_path);
 
     if (!std::filesystem::exists(lazy_file_path)) {
       std::ofstream file(lazy_file_path);
@@ -28,7 +28,7 @@ void install_lazy() {
     }
 
     if (!std::filesystem::exists(base::nvPath.plugins_path))
-      std::filesystem::create_directory(base::nvPath.plugins_path);
+      std::filesystem::create_directories(base::nvPath.plugins_path);
 
     std::ofstream init(base::nvPath.init_path, std::ios::app);
     if (!init.is_open())
