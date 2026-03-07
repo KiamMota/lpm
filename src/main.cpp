@@ -28,11 +28,11 @@ int main(int argn, char **argv) {
       return 0;
     }
     if (strcmp(argv[1], "list") == 0) {
-      commands::install(cli::main_args);
+      commands::list();
       return 0;
     }
     if (strcmp(argv[1], "remove") == 0) {
-      commands::install(cli::main_args);
+      commands::remove(cli::main_args);
     }
   }
 }

@@ -2,9 +2,13 @@
 #include "cli_base.hpp"
 #include "commands.hpp"
 #include "curl/curl.h"
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 static const std::string build_non_nested_table(const char *table_name,
                                                 std::vector<std::string> vec,
                                                 bool comma = true) {
@@ -16,7 +20,7 @@ static const std::string build_non_nested_table(const char *table_name,
   if (vec.empty())
     goto close_brackets;
 
-  for (int i = 0; i < vec.size(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     str << "'" << vec[i] << "'";
     if (i < vec.size() - 1)
       str << ", ";

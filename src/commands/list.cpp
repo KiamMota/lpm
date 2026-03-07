@@ -2,10 +2,11 @@
 #include "commands.hpp"
 #include <filesystem>
 #include <iostream>
+#include <vector>
 
 namespace commands {
 
-void list(std::vector<std::string> &commands) {
+void list() {
 
   std::cout << "installed plugins in " << base::nvPath.plugins_path << ": "
             << std::endl;
