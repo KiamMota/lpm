@@ -20,30 +20,31 @@ set(CURL_DISABLE_INSTALL     ON)
 add_subdirectory(third_party/curl)
 
 file(GLOB_RECURSE SRC_FILES "src/*.cpp")
-add_executable(lazynvimcli ${SRC_FILES})
+set(CLI_NAME lpm)
+add_executable(${CLI_NAME} ${SRC_FILES})
 
-target_include_directories(lazynvimcli PRIVATE
+target_include_directories(${CLI_NAME} PRIVATE
     third_party/curl/include
     include
 )
 
-target_link_libraries(lazynvimcli PRIVATE libcurl_static)
+target_link_libraries(${CLI_NAME} PRIVATE libcurl_static)
 
 if(WIN32)
-    target_link_libraries(lazynvimcli PRIVATE ws2_32 wldap32 crypt32 normaliz)
+  target_link_libraries(${CLI_NAME} PRIVATE ws2_32 wldap32 crypt32 normaliz)
 endif()
 
 if(MSVC)
-    target_compile_options(lazynvimcli PRIVATE /W4 /WX)
+  target_compile_options(${CLI_NAME} PRIVATE /W4 /WX)
 else()
-    target_compile_options(lazynvimcli PRIVATE -Wall -Wextra -Wpedantic -Werror)
+  target_compile_options(${CLI_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
 find_program(CLANG_TIDY clang-tidy)
 if(CLANG_TIDY)
-    set_target_properties(lazynvimcli PROPERTIES
+  set_target_properties(${CLI_NAME} PROPERTIES
         CXX_CLANG_TIDY "${CLANG_TIDY};--extra-arg=-std=c++17"
     )
 endif()
 
-install(TARGETS lazynvimcli RUNTIME DESTINATION bin)
+install(TARGETS ${CLI_NAME} RUNTIME DESTINATION bin)
