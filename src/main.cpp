@@ -21,7 +21,7 @@ int main(int argn, char **argv) {
   base::nvPath.plugins_path = base::nvPath.base_path + "/lua/plugins";
 
   if (argn >= 2) {
-    if (strcmp(argv[1], "--version") == 0 && strcmp(argv[1], "-v") == 0) {
+    if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0) {
       cli::version();
       return 0;
     }
