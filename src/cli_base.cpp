@@ -9,17 +9,23 @@ namespace cli {
 std::vector<std::string> main_args;
 
 void help() {
-  std::cout << "\nlpm - a lazy plugin manager cli\n\n"
-            << "usage:\n"
-            << "  lazynvimcli <command> [arguments]\n\n"
-            << "commands:\n"
-            << "  install  <github url>   install a plugin from github\n"
-            << "  remove   <plugin name>  remove an installed plugin\n"
-            << "  include  <plugin name>  add require to init.lua\n"
-            << "  list                    list installed plugins\n\n"
-            << "flags:\n"
-            << "  -v, --version           show version\n"
-            << std::endl;
+  std::cout
+      << "\nlpm — lazy plugin manager\n\n"
+      << "usage:  lpm <command> [argument]\n\n"
+      << "commands:\n"
+      << "  install    <github url>   download and create plugin config\n"
+      << "  remove     <plugin name>  delete plugin config file\n"
+      << "  activate   <plugin name>  uncomment require in init.lua\n"
+      << "  deactivate <plugin name>  comment out require in init.lua\n"
+      << "  list                      list installed plugins\n\n"
+      << "flags:\n"
+      << "  -v, --version             show version\n\n"
+      << "examples:\n"
+      << "  lpm install https://github.com/nvim-telescope/telescope.nvim\n"
+      << "  lpm remove telescope\n"
+      << "  lpm deactivate telescope\n"
+      << "  lpm activate telescope\n"
+      << std::endl;
 }
 
 void version() { std::cout << VERSION_STR << std::endl; }
