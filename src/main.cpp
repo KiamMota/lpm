@@ -37,7 +37,7 @@ int main(int argn, char **argv) {
       commands::remove(cli::main_args);
       return 0;
     }
-    if (strcmp(argv[1], "install-lazy") == 0) {
+    if (strcmp(argv[1], "install") == 0 && strcmp(argv[2], "lazy")) {
       commands::install_lazy();
       return 0;
     }

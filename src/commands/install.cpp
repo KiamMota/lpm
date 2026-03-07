@@ -103,6 +103,8 @@ void install(std::vector<std::string> &commands) {
   if (!base::is_lazy_installed()) {
     std::cout << "woops! you dont have lazy!" << std::endl;
     install_lazy();
+    std::cout << "done. try install your plugin again." << std::endl;
+    return;
   }
 
   std::string plugin_github_url = commands.at(0);
