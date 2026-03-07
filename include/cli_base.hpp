@@ -1,7 +1,6 @@
 #ifndef CLI_UTILS_HPP
 #define CLI_UTILS_HPP
 
-#include <functional>
 #include <string>
 #include <vector>
 namespace cli {

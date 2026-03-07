@@ -1,21 +1,19 @@
 #include "commands.hpp"
-#include "curl/curl.h"
+#include <curl/curl.h>
 #include <filesystem>
 #include <iostream>
 
 namespace commands {
+
 void self_update() {
   std::cout << "checking for updates..." << std::endl;
 
-  // pega o caminho do próprio binário
   std::string binary_path =
       std::filesystem::read_symlink("/proc/self/exe").string();
-
   std::string download_url =
       "https://github.com/KiamMota/lpm/releases/latest/download/lpm";
   std::string tmp_path = "/tmp/lpm_update";
 
-  // baixa o novo binário via curl
   CURL *curl = curl_easy_init();
   if (!curl) {
     std::cout << "err: failed to init curl" << std::endl;
@@ -58,28 +56,26 @@ void self_update() {
     return;
   }
 
-  // torna executável
   std::filesystem::permissions(tmp_path,
                                std::filesystem::perms::owner_exec |
                                    std::filesystem::perms::group_exec |
                                    std::filesystem::perms::others_exec,
                                std::filesystem::perm_options::add);
 
-  // substitui o binário atual
   try {
     std::filesystem::rename(tmp_path, binary_path);
     std::cout << "updated! restart lpm." << std::endl;
-  } catch (const std::exception &ex) {
-    // rename pode falhar entre filesystems, tenta copy
+  } catch (const std::exception &) {
     try {
       std::filesystem::copy_file(
           tmp_path, binary_path,
           std::filesystem::copy_options::overwrite_existing);
       std::filesystem::remove(tmp_path);
       std::cout << "updated! restart lpm." << std::endl;
-    } catch (const std::exception &ex2) {
-      std::cout << "err: need sudo? " << ex2.what() << std::endl;
+    } catch (const std::exception &ex) {
+      std::cout << "err: need sudo? " << ex.what() << std::endl;
     }
   }
 }
+
 } // namespace commands
