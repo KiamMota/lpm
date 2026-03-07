@@ -1,5 +1,6 @@
 #include "base.hpp"
 #include <cstdlib>
+#include <filesystem>
 #include <stdexcept>
 #include <string>
 
@@ -17,6 +18,14 @@ const std::string get_nvim_config_path() {
     throw std::runtime_error("HOME not found");
   return std::string(home) + "/.config/nvim";
 #endif
+}
+
+bool is_lazy_installed() {
+  return std::filesystem::exists(base::nvPath.lua_path) &&
+         std::filesystem::exists(base::nvPath.config_path) &&
+         std::filesystem::exists(base::nvPath.plugins_path) &&
+         std::filesystem::exists(base::nvPath.config_path + "/lazy.lua") &&
+         std::filesystem::exists(base::nvPath.init_path);
 }
 
 NvimConfigPath nvPath;

@@ -9,6 +9,8 @@
 #define VERSION_PATCH 0
 namespace base {
 const std::string get_nvim_config_path();
+bool is_lazy_installed();
+
 struct NvimConfigPath {
   std::string base_path;
   std::string init_path;
