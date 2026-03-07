@@ -14,7 +14,9 @@ set(CURL_ENABLE_EXPORT_TARGET OFF)
 set(CURL_DISABLE_INSTALL ON)
 add_subdirectory(third_party/curl)
 
-add_executable(lazynvimcli main.cpp)
+file(GLOB SRC_FILES "*.cpp")
+
+add_executable(lazynvimcli ${SRC_FILES})
 
 target_include_directories(lazynvimcli PRIVATE third_party/curl/include)
 target_link_libraries(lazynvimcli PRIVATE libcurl_static)
