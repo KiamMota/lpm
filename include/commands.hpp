@@ -10,6 +10,7 @@ void install(std::vector<std::string> &args);
 void remove(std::vector<std::string> &args);
 void activate(std::vector<std::string> &args);
 void deactivate(std::vector<std::string> &args);
+void self_update();
 } // namespace commands
 
 namespace commands {

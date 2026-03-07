@@ -1,9 +1,9 @@
 #include "base.hpp"
 #include "cli_base.hpp"
 #include "commands.hpp"
-#include <cstring>
+#include <functional>
 #include <iostream>
-#include <iterator>
+#include <unordered_map>
 #include <vector>
 
 int main(int argn, char **argv) {
@@ -12,9 +12,8 @@ int main(int argn, char **argv) {
     return 0;
   }
 
-  for (int i = 2; i < argn; i++) {
+  for (int i = 2; i < argn; i++)
     cli::main_args.push_back(argv[i]);
-  }
 
   base::nvPath.base_path = base::get_nvim_config_path();
   base::nvPath.init_path = base::nvPath.base_path + "/init.lua";
@@ -22,35 +21,38 @@ int main(int argn, char **argv) {
   base::nvPath.config_path = base::nvPath.base_path + "/lua/config";
   base::nvPath.plugins_path = base::nvPath.base_path + "/lua/plugins";
 
-  if (argn >= 2) {
-    if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0) {
-      cli::version();
-      return 0;
-    }
-    if (strcmp(argv[1], "install") == 0) {
-      commands::install(cli::main_args);
-      return 0;
-    }
-    if (strcmp(argv[1], "list") == 0) {
-      commands::list();
-      return 0;
-    }
-    if (strcmp(argv[1], "remove") == 0) {
-      commands::remove(cli::main_args);
-      return 0;
-    }
+  const std::unordered_map<std::string, std::function<void()>> simple_commands =
+      {
+          {"--version", []() { cli::version(); }},
+          {"-v", []() { cli::version(); }},
+          {"list", []() { commands::list(); }},
+          {"--help", []() { cli::help(); }},
+          {"-h", []() { cli::help(); }},
+          {"--self-update", []() { commands::self_update(); }},
+      };
 
-    if (strcmp(argv[1], "activate") == 0) {
-      commands::activate(cli::main_args);
-      return 0;
-    }
+  const std::unordered_map<std::string,
+                           std::function<void(std::vector<std::string> &)>>
+      arg_commands = {
+          {"install", commands::install},
+          {"remove", commands::remove},
+          {"activate", commands::activate},
+          {"deactivate", commands::deactivate},
+      };
 
-    if (strcmp(argv[1], "deactivate") == 0) {
-      commands::deactivate(cli::main_args);
-      return 0;
-    }
+  std::string cmd = argv[1];
 
-    std::cout << "'" << argv[1] << "'" << "?" << std::endl;
+  if (auto it = simple_commands.find(cmd); it != simple_commands.end()) {
+    it->second();
+    return 0;
   }
+
+  if (auto it = arg_commands.find(cmd); it != arg_commands.end()) {
+    it->second(cli::main_args);
+    return 0;
+  }
+
+  std::cout << "unknown command: '" << cmd << "'\n" << std::endl;
+  cli::help();
   return 1;
 }
