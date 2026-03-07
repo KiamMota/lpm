@@ -11,26 +11,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-static const std::string build_non_nested_table(const char *table_name,
-                                                std::vector<std::string> vec,
-                                                bool comma = true) {
-  std::stringstream str;
-  std::string _spc = "  ";
-  str << _spc << table_name << " = ";
-
-  str << "{";
-  if (vec.empty())
-    goto close_brackets;
-
-  for (size_t i = 0; i < vec.size(); i++) {
-    str << "'" << vec[i] << "'";
-    if (i < vec.size() - 1)
-      str << ", ";
-  }
-close_brackets:
-  str << "}" << (comma ? "," : "\n");
-  return str.str();
-}
 
 static const std::string build_file_string(const char *github_url) {
   std::string _space = "  ";
