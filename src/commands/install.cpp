@@ -118,6 +118,7 @@ static std::string resolve_plugin_name(const std::string &name) {
   }
 
   std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+  std::replace(result.begin(), result.end(), '.', '-');
   return result;
 }
 namespace commands {
