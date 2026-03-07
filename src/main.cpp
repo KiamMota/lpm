@@ -2,6 +2,8 @@
 #include "cli_base.hpp"
 #include "commands.hpp"
 #include <cstring>
+#include <iostream>
+#include <iterator>
 #include <vector>
 
 int main(int argn, char **argv) {
@@ -47,6 +49,8 @@ int main(int argn, char **argv) {
       commands::deactivate(cli::main_args);
       return 0;
     }
+
+    std::cout << "'" << argv[1] << "'" << "?" << std::endl;
   }
   return 1;
 }
