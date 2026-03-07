@@ -2,6 +2,12 @@
 
 > Manage your Neovim plugins from the terminal, without opening the editor.
 
+```bash
+lpm install https://github.com/nvim-telescope/telescope.nvim
+# ✓ installed telescope
+# ✓ require added to init.lua
+```
+
 ---
 
 ## Installation
@@ -17,20 +23,25 @@ sudo cmake --install build
 
 | Command | Description |
 |---|---|
-| `lpm install <github_url>` | Install a plugin |
-| `lpm remove <plugin-name>` | Remove a plugin |
-| `lpm include <plugin-name>` | Add require to init.lua |
+| `lpm install <github_url>` | Download and create plugin config |
+| `lpm remove <plugin>` | Delete plugin config file |
+| `lpm activate <plugin>` | Uncomment require in init.lua |
+| `lpm deactivate <plugin>` | Comment out require in init.lua |
 | `lpm list` | List installed plugins |
+| `lpm --self-update` | Update lpm to the latest version |
+| `lpm --version` | Show version |
+
+All commands that take a plugin name support **fuzzy search** — you don't need the exact name.
 
 ---
 
-### `install`
+## How it works
 
-Fetches the plugin from GitHub and creates a `.lua` file in your plugins folder.
+`lpm` creates and manages `.lua` files in your plugins folder. lazy.nvim picks them up automatically — no manual config needed.
 
-```bash
-lpm install https://github.com/nvim-telescope/telescope.nvim
-# → creates ~/.config/nvim/lua/plugins/telescope.nvim.lua
+```
+lpm install → creates .lua file → lazy.nvim downloads the plugin
+lpm remove  → deletes .lua file → lazy.nvim uninstalls on next sync
 ```
 
 Each plugin gets its own file:
@@ -43,47 +54,32 @@ return {
 }
 ```
 
----
+If a curated config exists in the [lpm plugin registry](https://github.com/KiamMota/lpm/tree/main/plugins_config), it will be used instead of the generic template.
 
-### `remove`
-
-Deletes the plugin's `.lua` file. Supports fuzzy search — you don't need the exact name.
-
-```bash
-lpm remove telescope
-# finds telescope.nvim and removes it
-```
-
-lazy.nvim will uninstall the plugin on the next `:Lazy sync`.
+After any change, open Neovim and run `:Lazy sync` to apply.
 
 ---
 
-### `include`
-
-Adds a `require('plugins.<name>')` line to your `init.lua`, right below `require(config.lazy)`.
+## Examples
 
 ```bash
-lpm include telescope
-```
+# install a plugin
+lpm install https://github.com/folke/snacks.nvim
 
----
+# temporarily disable without removing
+lpm deactivate snacks
 
-### `list`
+# re-enable it
+lpm activate snacks
 
-Lists all `.lua` files currently in your plugins folder.
+# remove for good
+lpm remove snacks
 
-```bash
+# see what's installed
 lpm list
-```
 
----
-
-## How it works
-
-`lpm` manages files in `~/.config/nvim/lua/plugins/`. Each plugin has its own `.lua` file that lazy.nvim picks up automatically. After any change, open Neovim and run:
-
-```
-:Lazy sync
+# update lpm itself
+lpm --self-update
 ```
 
 ---
