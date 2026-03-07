@@ -7,6 +7,6 @@ namespace commands {
 void install(std::vector<std::string> &args);
 void remove(std::vector<std::string> &args);
 void list();
-void install_lazy(std::vector<std::string> &args);
+void install_lazy();
 } // namespace commands
 #endif // CMD_INSTALL_HPP
