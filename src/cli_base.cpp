@@ -9,7 +9,7 @@ namespace cli {
 std::vector<std::string> main_args;
 
 void help() {
-  std::cout << "\nlazynvimcli - a lazy plugin manager cli\n\n"
+  std::cout << "\nlpm - a lazy plugin manager cli\n\n"
             << "usage:\n"
             << "  lazynvimcli <command> [arguments]\n\n"
             << "commands:\n"
