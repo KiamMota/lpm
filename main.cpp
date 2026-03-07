@@ -124,7 +124,46 @@ void prepend_to_file(const std::string &filepath, const std::string &content) {
   file_out << content << buffer.str(); // novo + original
   file_out.close();
 }
-void install_command(std::vector<std::string> &commands) {
+
+void command_list(std::vector<std::string> &commands) {
+
+  std::cout << "installed plugins in " << nvim_plugins_path << ": "
+            << std::endl;
+
+  for (const std::filesystem::directory_entry &p :
+       std::filesystem::directory_iterator(nvim_plugins_path)) {
+    if (p.is_regular_file())
+      std::cout << p.path().filename() << std::endl;
+  }
+}
+
+void command_delete(std::vector<std::string> &commands) {
+  std::string plugin_to_delete = commands.at(0);
+  for (const std::filesystem::directory_entry &p :
+       std::filesystem::directory_iterator(nvim_plugins_path)) {
+    if (p.is_regular_file()) {
+      if (p.path().filename() == plugin_to_delete) {
+        std::filesystem::remove(p);
+      }
+    }
+  }
+
+  std::cout << "removed." << std::endl;
+  std::ifstream file(nvim_init_file);
+  std::stringstream buffer;
+  buffer << file.rdbuf();
+  std::string content = buffer.str();
+
+  bool found = content.find("require('plugins." + plugin_to_delete + "')") !=
+               std::string::npos;
+}
+
+void command_install(std::vector<std::string> &commands) {
+  if (commands.empty()) {
+    std::cout << "install require another argument: <url>" << std::endl;
+    return;
+  }
+
   std::string plugin_github_url = commands.at(0);
   std::string plugin_name =
       plugin_github_url.substr(plugin_github_url.rfind('/') + 1);
@@ -181,7 +220,15 @@ int main(int argn, char **argv) {
 
   if (argn >= 2) {
     if (strcmp(argv[1], "install") == 0) {
-      install_command(args);
+      command_install(args);
+      return 0;
+    }
+    if (strcmp(argv[1], "list") == 0) {
+      command_list(args);
+      return 0;
+    }
+    if (strcmp(argv[1], "remove") == 0) {
+      command_delete(args);
     }
   }
 }
