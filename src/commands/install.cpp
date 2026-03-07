@@ -92,7 +92,14 @@ std::string install_recommended_plugin_config(const std::string &plugin_name) {
 }
 static std::string resolve_plugin_name(const std::string &name) {
   std::string result = name;
-  // remove sufixos comuns
+
+  size_t slash_pos = result.rfind('/');
+  if (slash_pos != std::string::npos)
+    result = result.substr(slash_pos + 1);
+
+  if (result.size() > 4 && result.substr(result.size() - 4) == ".git")
+    result = result.substr(0, result.size() - 4);
+
   for (const std::string suffix : {".nvim", "-nvim", ".neovim", "-neovim",
                                    ".vim", "-vim", ".lua", "-lua"}) {
     if (result.size() > suffix.size() &&
@@ -101,7 +108,7 @@ static std::string resolve_plugin_name(const std::string &name) {
       break;
     }
   }
-  // remove prefixos comuns
+
   for (const std::string prefix : {"nvim-", "neovim-", "vim-"}) {
     if (result.size() > prefix.size() &&
         result.substr(0, prefix.size()) == prefix) {
@@ -109,7 +116,7 @@ static std::string resolve_plugin_name(const std::string &name) {
       break;
     }
   }
-  // lowercase
+
   std::transform(result.begin(), result.end(), result.begin(), ::tolower);
   return result;
 }
@@ -144,8 +151,10 @@ void install(std::vector<std::string> &commands) {
   }
   std::string plugin_name = resolve_plugin_name(plugin_github_url);
   std::cout << "resolved plugin name." << std::endl;
+
   std::string filepath = base::nvPath.plugins_path + "/" + plugin_name + ".lua";
   std::cout << "resolved plugin filepath." << std::endl;
+
   if (std::filesystem::exists(filepath)) {
     std::cout << "plugin already installed!" << std::endl;
     return;
