@@ -150,10 +150,9 @@ void install(std::vector<std::string> &commands) {
     return;
   }
   std::string plugin_name = resolve_plugin_name(plugin_github_url);
-  std::cout << "resolved plugin name." << std::endl;
-
+  std::cout << "resolved plugin name. (" << plugin_name << ")" << std::endl;
   std::string filepath = base::nvPath.plugins_path + "/" + plugin_name + ".lua";
-  std::cout << "resolved plugin filepath." << std::endl;
+  std::cout << "resolved plugin filepath. (" << filepath << ")" << std::endl;
 
   if (std::filesystem::exists(filepath)) {
     std::cout << "plugin already installed!" << std::endl;
