@@ -1,130 +1,60 @@
+#include "base.hpp"
 #include "commands.hpp"
+#include "lazy_config.hpp"
 
-#include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
-#include <stdexcept>
-#include <string>
-
-namespace fs = std::filesystem;
 
 namespace commands {
-
-static void log(const std::string &msg) {
-  std::cout << "[lazy-install] " << msg << std::endl;
-}
-
-static void log_error(const std::string &msg) {
-  std::cerr << "[lazy-install] ERROR: " << msg << std::endl;
-}
-
-static bool run_command(const std::string &cmd) {
-  log("Running: " + cmd);
-  int result = std::system(cmd.c_str());
-  if (result != 0) {
-    log_error("Command failed with exit code: " + std::to_string(result));
-    return false;
-  }
-  return true;
-}
-
-static fs::path get_lazy_path() {
-#ifdef _WIN32
-  const char *appdata = std::getenv("LOCALAPPDATA");
-  if (!appdata)
-    throw std::runtime_error("LOCALAPPDATA environment variable not found.");
-  return fs::path(appdata) / "nvim-data" / "lazy" / "lazy.nvim";
-#else
-  const char *home = std::getenv("HOME");
-  if (!home)
-    throw std::runtime_error("HOME environment variable not found.");
-  return fs::path(home) / ".local" / "share" / "nvim" / "lazy" / "lazy.nvim";
-#endif
-}
-
-static bool git_available() {
-#ifdef _WIN32
-  return std::system("git --version >nul 2>&1") == 0;
-#else
-  return std::system("git --version >/dev/null 2>&1") == 0;
-#endif
-}
-
 void install_lazy() {
-  log("Starting lazy.nvim installation...");
+  std::cout << "Lazy installation for a lazy plugin manager...\n";
 
-  // Check if git is available
-  if (!git_available()) {
-    log_error("git is not installed or not in PATH. Please install git first.");
-    return;
-  }
-  log("git found.");
+  std::string lazy_file_path = base::nvPath.config_path + "/lazy.lua";
 
-  fs::path lazy_path;
   try {
-    lazy_path = get_lazy_path();
-  } catch (const std::exception &e) {
-    log_error(e.what());
-    return;
-  }
+    if (!std::filesystem::exists(base::nvPath.lua_path))
+      std::filesystem::create_directory(base::nvPath.lua_path);
 
-  log("Target install path: " + lazy_path.string());
+    if (!std::filesystem::exists(base::nvPath.config_path))
+      std::filesystem::create_directory(base::nvPath.config_path);
 
-  // Check if already installed
-  if (fs::exists(lazy_path)) {
-    log("lazy.nvim is already installed at: " + lazy_path.string());
-    log("Pulling latest changes...");
-
-#ifdef _WIN32
-    std::string pull_cmd = "git -C \"" + lazy_path.string() + "\" pull";
-#else
-    std::string pull_cmd = "git -C '" + lazy_path.string() + "' pull";
-#endif
-    if (run_command(pull_cmd)) {
-      log("lazy.nvim updated successfully.");
-    } else {
-      log_error("Failed to update lazy.nvim.");
+    if (!std::filesystem::exists(lazy_file_path)) {
+      std::ofstream file(lazy_file_path);
+      if (!file.is_open())
+        throw std::runtime_error("Failed to create lazy.lua");
+      file << LAZY_LUA_CONTENT;
+      file.close();
     }
-    return;
-  }
 
-  // Create parent directories if they don't exist
-  fs::path parent = lazy_path.parent_path();
-  try {
-    fs::create_directories(parent);
-    log("Created directories: " + parent.string());
+    if (!std::filesystem::exists(base::nvPath.plugins_path))
+      std::filesystem::create_directory(base::nvPath.plugins_path);
+
+    std::ofstream init(base::nvPath.init_path, std::ios::app);
+    if (!init.is_open())
+      throw std::runtime_error("Failed to open init.lua");
+    init << "\nrequire(\"config.lazy\")\n";
+    init.close();
+
+    std::cout << "Lazy installed successfully!\n";
+
   } catch (const std::exception &e) {
-    log_error("Failed to create directories: " + std::string(e.what()));
-    return;
-  }
+    std::cerr << "Error: " << e.what() << " — rolling back...\n";
 
-  // Clone lazy.nvim
-  const std::string repo_url = "https://github.com/folke/lazy.nvim.git";
-  const std::string branch = "stable";
+    // rollback
+    if (std::filesystem::exists(lazy_file_path))
+      std::filesystem::remove(lazy_file_path);
 
-#ifdef _WIN32
-  std::string clone_cmd = "git clone --filter=blob:none --branch " + branch +
-                          " \"" + repo_url + "\" \"" + lazy_path.string() +
-                          "\"";
-#else
-  std::string clone_cmd = "git clone --filter=blob:none --branch " + branch +
-                          " '" + repo_url + "' '" + lazy_path.string() + "'";
-#endif
+    if (std::filesystem::exists(base::nvPath.plugins_path))
+      std::filesystem::remove(base::nvPath.plugins_path);
 
-  log("Cloning lazy.nvim from " + repo_url + " (branch: " + branch + ")...");
-  if (run_command(clone_cmd)) {
-    log("lazy.nvim installed successfully at: " + lazy_path.string());
-    log("Add the following to your init.lua to bootstrap lazy.nvim:");
-    log("  vim.opt.rtp:prepend(vim.fn.stdpath('data') .. '/lazy/lazy.nvim')");
-  } else {
-    log_error("Failed to clone lazy.nvim.");
+    if (std::filesystem::exists(base::nvPath.config_path))
+      std::filesystem::remove(base::nvPath.config_path);
 
-    // Cleanup partial clone if it exists
-    if (fs::exists(lazy_path)) {
-      log("Cleaning up partial installation...");
-      fs::remove_all(lazy_path);
-    }
+    if (std::filesystem::exists(base::nvPath.lua_path))
+      std::filesystem::remove(base::nvPath.lua_path);
+
+    std::cerr << "Rollback complete.\n";
   }
 }
-
 } // namespace commands

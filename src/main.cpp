@@ -16,6 +16,8 @@ int main(int argn, char **argv) {
 
   base::nvPath.base_path = base::get_nvim_config_path();
   base::nvPath.init_path = base::nvPath.base_path + "/init.lua";
+  base::nvPath.lua_path = base::nvPath.base_path + "/lua";
+  base::nvPath.config_path = base::nvPath.base_path + "/lua/config";
   base::nvPath.plugins_path = base::nvPath.base_path + "/lua/plugins";
 
   if (argn >= 2) {

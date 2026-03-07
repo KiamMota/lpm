@@ -12,7 +12,10 @@ const std::string get_nvim_config_path();
 struct NvimConfigPath {
   std::string base_path;
   std::string init_path;
+  std::string lua_path;
   std::string plugins_path;
+  std::string config_path;
+  bool is_lazyvim;
 };
 
 extern NvimConfigPath nvPath;
