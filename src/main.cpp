@@ -37,6 +37,11 @@ int main(int argn, char **argv) {
       commands::remove(cli::main_args);
       return 0;
     }
+
+    if (strcmp(argv[1], "include") == 0) {
+      commands::include(cli::main_args);
+      return 0;
+    }
   }
   return 1;
 }

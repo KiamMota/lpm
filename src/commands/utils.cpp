@@ -40,8 +40,12 @@ void insert_require_in_init_lua(const std::string &content) {
     }
   }
 
-  if (lazy_line_index == -1)
-    throw std::runtime_error("require(config.lazy) not found in init.lua");
+  if (lazy_line_index == -1) {
+    std::cout << "warning: require(config.lazy) not found in init.lua, "
+                 "inserting at end."
+              << std::endl;
+    lazy_line_index = static_cast<int>(lines.size()) - 1;
+  }
 
   std::string new_line = content;
   for (const std::string &l : lines) {
@@ -91,7 +95,7 @@ const std::vector<std::string> fuzzy_find_plugin(const char *plugin_name) {
   };
 
   auto normalize = [](std::string name) -> std::string {
-    for (const std::string &suffix :
+    for (const std::string suffix :
          {".nvim", "-nvim", ".lua", "-lua", ".vim", "-vim"}) {
       if (name.size() > suffix.size() &&
           name.substr(name.size() - suffix.size()) == suffix) {

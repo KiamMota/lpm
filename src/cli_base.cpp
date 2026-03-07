@@ -9,9 +9,17 @@ namespace cli {
 std::vector<std::string> main_args;
 
 void help() {
-  std::cout << "commands: \n\n"
-            << "lazynv  install  <github url> <filename>\n"
-            << "lazynv  remove   <filename>\n";
+  std::cout << "\nlazynvimcli - a lazy plugin manager cli\n\n"
+            << "usage:\n"
+            << "  lazynvimcli <command> [arguments]\n\n"
+            << "commands:\n"
+            << "  install  <github url>   install a plugin from github\n"
+            << "  remove   <plugin name>  remove an installed plugin\n"
+            << "  include  <plugin name>  add require to init.lua\n"
+            << "  list                    list installed plugins\n\n"
+            << "flags:\n"
+            << "  -v, --version           show version\n"
+            << std::endl;
 }
 
 void version() { std::cout << VERSION_STR << std::endl; }
