@@ -3,6 +3,7 @@
 #include "commands.hpp"
 #include "curl/curl.h"
 #include <cstddef>
+#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -73,44 +74,55 @@ bool github_url_exists(const std::string &url) {
 
   return res == CURLE_OK && http_code == 200;
 }
-static const std::string build_require(const char *plugin_name) {
-  return "require(plugins." + std::string(plugin_name) + ")";
-}
-void prepend_to_file(const std::string &filepath, const std::string &content) {
-  std::ifstream file_in(filepath);
-  if (!file_in.is_open())
-    throw std::runtime_error("failed to open file: " + filepath);
-
-  std::stringstream buffer;
-  buffer << file_in.rdbuf();
-  file_in.close();
-
-  std::ofstream file_out(filepath);
-  if (!file_out.is_open())
-    throw std::runtime_error("failed to write file: " + filepath);
-
-  file_out << content << buffer.str(); // novo + original
-  file_out.close();
-}
 namespace commands {
-
 void install(std::vector<std::string> &commands) {
   if (commands.empty()) {
     cli::require_arg("install", "<github url>");
     return;
   }
 
+  bool is_lazy_command = commands.at(0) == "lazy";
+
   if (!base::is_lazy_installed()) {
     std::cout << "woops! you dont have lazy!" << std::endl;
-    install_lazy();
+    try {
+      install_lazy();
+    } catch (std::exception const &ex) {
+      std::cout << "err: " << ex.what() << std::endl;
+      return;
+    }
     std::cout << "done. try install your plugin again." << std::endl;
     return;
   }
 
+  if (is_lazy_command) {
+    std::cout << "lazy is already installed!" << std::endl;
+    return;
+  }
+
   std::string plugin_github_url = commands.at(0);
-  std::string plugin_name =
-      plugin_github_url.substr(plugin_github_url.rfind('/') + 1);
+
+  // valida se a URL tem '/'
+  size_t slash_pos = plugin_github_url.rfind('/');
+  if (slash_pos == std::string::npos) {
+    std::cout << "Error: invalid GitHub URL: " << plugin_github_url
+              << std::endl;
+    return;
+  }
+
+  // extrai o nome e remove .git se existir
+  std::string plugin_name = plugin_github_url.substr(slash_pos + 1);
+  if (plugin_name.size() > 4 &&
+      plugin_name.substr(plugin_name.size() - 4) == ".git")
+    plugin_name = plugin_name.substr(0, plugin_name.size() - 4);
+
+  if (plugin_name.empty()) {
+    std::cout << "Error: could not extract plugin name from URL." << std::endl;
+    return;
+  }
+
   std::string filepath = base::nvPath.plugins_path + "/" + plugin_name + ".lua";
+
   if (std::filesystem::exists(filepath)) {
     std::cout << "plugin already installed!" << std::endl;
     return;
@@ -127,25 +139,37 @@ void install(std::vector<std::string> &commands) {
   }
 
   std::string file_content = build_file_string(plugin_github_url.c_str());
-  std::ofstream file(filepath);
-  if (!file.is_open())
-    std::cout << "fail to open file: " + filepath << std::endl;
-  file << file_content;
 
-  if (file.fail())
-    std::cout << "fail to write file: " + filepath << std::endl;
+  std::ofstream file(filepath);
+  if (!file.is_open()) {
+    std::cout << "fail to open file: " << filepath << std::endl;
+    return;
+  }
+
+  file << file_content;
+  if (file.fail()) {
+    file.close();
+    std::filesystem::remove(filepath);
+    std::cout << "fail to write file: " << filepath << std::endl;
+    return;
+  }
   file.close();
+
   std::cout << "installed!" << std::endl;
   std::cout << file_content << std::endl;
   std::cout << "created in: " << filepath << std::endl;
+
   if (cli::msg_question("Do you want to insert it into init.lua ?")) {
-    std::ofstream init_lua(base::nvPath.init_path);
-    if (!init_lua.is_open()) {
-      std::cout << "init.lua cannot be open." << std::endl;
-      return;
+    try {
+      utils::insert_require_in_init_lua(
+          ("require('plugins." + plugin_name + "')").c_str());
+      std::cout << "done." << std::endl;
+    } catch (std::exception const &ex) {
+      std::cout << "Error: " << ex.what() << std::endl;
+      std::cout << "Rolling back..." << std::endl;
+      std::filesystem::remove(filepath);
+      std::cout << "Rollback complete." << std::endl;
     }
-    prepend_to_file(base::nvPath.init_path, build_require(plugin_name.c_str()));
-    std::cout << "done." << std::endl;
   }
 }
 } // namespace commands

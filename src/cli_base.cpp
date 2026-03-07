@@ -16,9 +16,9 @@ void help() {
 
 void version() { std::cout << VERSION_STR << std::endl; }
 
-bool msg_question(const char *message) {
+bool msg_question(const std::string &msg) {
 
-  std::cout << message << " [Y/n] ";
+  std::cout << msg << " [Y/n] ";
   std::string inp;
   std::getline(std::cin, inp);
 

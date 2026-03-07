@@ -17,7 +17,6 @@ struct NvimConfigPath {
   std::string lua_path;
   std::string plugins_path;
   std::string config_path;
-  bool is_lazyvim;
 };
 
 extern NvimConfigPath nvPath;

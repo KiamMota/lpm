@@ -10,7 +10,7 @@ extern std::vector<std::string> main_args;
 void help();
 void version();
 void require_arg(const char *cmd, const char *required_arg);
-bool msg_question(const char *message);
+bool msg_question(const std::string &msg);
 
 } // namespace cli
 
