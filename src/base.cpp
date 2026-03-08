@@ -21,13 +21,13 @@ const std::string get_nvim_config_path() {
 }
 
 bool is_lazy_installed() {
-  return std::filesystem::exists(base::nvPath.lua_path) &&
-         std::filesystem::exists(base::nvPath.config_path) &&
-         std::filesystem::exists(base::nvPath.plugins_path) &&
-         std::filesystem::exists(base::nvPath.config_path + "/lazy.lua") &&
-         std::filesystem::exists(base::nvPath.init_path);
+  std::string base = get_nvim_config_path();
+  return std::filesystem::exists(base + "/lua") &&
+         std::filesystem::exists(base + "/lua/config") &&
+         std::filesystem::exists(base + "/lua/plugins") &&
+         std::filesystem::exists(base + "/lua/config/lazy.lua") &&
+         std::filesystem::exists(base + "/init.lua");
 }
-
 bool is_nvim_installed() {
 #if defined(_WIN32) || defined(_WIN64)
   return std::system("where nvim >nul 2>&1") == 0;
