@@ -58,7 +58,11 @@ int main(int argn, char **argv) {
     return 0;
   }
   if (cmd == "enable") {
-    commands::able(cli::main_args);
+    commands::activate(cli::main_args);
+    return 0;
+  }
+  if (cmd == "deactivate") {
+    commands::deactivate(cli::main_args);
     return 0;
   }
   if (cmd == "cat") {

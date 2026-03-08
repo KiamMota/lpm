@@ -10,7 +10,7 @@ void install(std::vector<std::string> &args);
 void remove(std::vector<std::string> &args);
 void cat(std::vector<std::string> &args);
 void edit(std::vector<std::string> &args);
-void activate(std::vector<std::string> &args);
+void able(std::vector<std::string> &args);
 void deactivate(std::vector<std::string> &args);
 void self_update();
 
