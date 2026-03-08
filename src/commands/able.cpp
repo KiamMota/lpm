@@ -50,6 +50,7 @@ void able(std::vector<std::string> &args) {
       continue;
 
     found = true;
+    std::cout << "-- " << chosen_path << std::endl;
     if (l.find("true") != std::string::npos) {
       l.replace(l.find("true"), 4, "false");
       std::cout << "enabled = false" << std::endl;
@@ -61,10 +62,60 @@ void able(std::vector<std::string> &args) {
   }
 
   if (!found) {
-    std::cout << "not found." << std::endl;
+    // procura o último "}" e insere "enabled = true," antes dele
+    int closing_brace_index = -1;
+    for (int i = static_cast<int>(lines.size()) - 1; i >= 0; i--) {
+      if (lines[i].find('}') != std::string::npos) {
+        closing_brace_index = i;
+        break;
+      }
+    }
+
+    if (closing_brace_index == -1) {
+      std::cout << "err: could not find closing brace in " << chosen_path
+                << std::endl;
+      return;
+    }
+
+    // descobre a indentação da linha anterior
+    std::string indent = "  ";
+    if (closing_brace_index > 0) {
+      std::string prev = lines[closing_brace_index - 1];
+      indent = "";
+      for (char c : prev) {
+        if (c == ' ' || c == '\t')
+          indent += c;
+        else
+          break;
+      }
+      if (indent.empty())
+        indent = "  ";
+    }
+
+    lines.insert(lines.begin() + closing_brace_index,
+                 indent + "enabled = true,");
+
+    std::cout << "enabled = true (inserted)" << std::endl;
+
+    std::ofstream file_out(chosen_path);
+    if (!file_out.is_open()) {
+      std::cout << "err: failed to write " << chosen_path << std::endl;
+      return;
+    }
+    for (const std::string &l : lines) {
+      file_out << l << "\n";
+      if (file_out.fail()) {
+        file_out.close();
+        std::ofstream restore(chosen_path);
+        for (const std::string &bl : backup)
+          restore << bl << "\n";
+        std::cout << "err: write failed, rolled back." << std::endl;
+        return;
+      }
+    }
+    file_out.close();
     return;
   }
-
   std::ofstream file_out(chosen_path);
   if (!file_out.is_open()) {
     std::cout << "err: failed to write " << chosen_path << std::endl;
