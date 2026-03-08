@@ -21,7 +21,7 @@ int main(int argn, char **argv) {
     cli::help();
     return 0;
   }
-  if (cmd == "--self-update") {
+  if (cmd == "--self-update" || cmd == "-u") {
     commands::self_update();
     return 0;
   }
