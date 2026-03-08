@@ -1,6 +1,6 @@
 # lpm — Lazy Plugin Manager
 
-> Manage your Neovim plugins from the terminal, without opening the editor.
+> A terminal-first plugin manager for lazy.nvim.
 
 ```bash
 lpm install https://github.com/nvim-telescope/telescope.nvim
@@ -27,9 +27,11 @@ sudo cmake --install build
 | `lpm remove <plugin>` | Delete plugin config file |
 | `lpm activate <plugin>` | Uncomment require in init.lua |
 | `lpm deactivate <plugin>` | Comment out require in init.lua |
+| `lpm cat <plugin>` | Print plugin config to terminal |
+| `lpm edit <plugin>` | Open plugin config in $EDITOR |
 | `lpm list` | List installed plugins |
-| `lpm --self-update` | Update lpm to the latest version |
-| `lpm --version` | Show version |
+| `lpm --self-update/-u` | Update lpm to the latest version |
+| `lpm --version/-v` | Show version |
 
 All commands that take a plugin name support **fuzzy search** — you don't need the exact name.
 
@@ -65,6 +67,12 @@ After any change, open Neovim and run `:Lazy sync` to apply.
 ```bash
 # install a plugin
 lpm install https://github.com/folke/snacks.nvim
+
+# check the generated config
+lpm cat snacks
+
+# edit the config manually
+lpm edit snacks
 
 # temporarily disable without removing
 lpm deactivate snacks

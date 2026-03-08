@@ -26,6 +26,7 @@ int main(int argn, char **argv) {
     }
     commands::install_lazy();
   }
+  base::start_nvPath();
 
   for (int i = 2; i < argn; i++)
     cli::main_args.push_back(argv[i]);
