@@ -57,7 +57,7 @@ int main(int argn, char **argv) {
     commands::remove(cli::main_args);
     return 0;
   }
-  if (cmd == "enable") {
+  if (cmd == "able") {
     commands::able(cli::main_args);
     return 0;
   }
