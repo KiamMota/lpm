@@ -9,6 +9,7 @@ int main(int argn, char **argv) {
     cli::help();
     return 0;
   }
+  base::start_nvPath();
 
   std::string cmd = argv[1];
 
@@ -40,8 +41,6 @@ int main(int argn, char **argv) {
     }
     commands::install_lazy();
   }
-
-  base::start_nvPath();
 
   for (int i = 2; i < argn; i++)
     cli::main_args.push_back(argv[i]);
