@@ -22,25 +22,23 @@ jobs:
           name: lpm-linux-amd64
           path: build/lpm
 
-  linux-i386:
+   linux-i386:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Install dependencies
-        run: sudo apt-get install -y gcc-multilib g++-multilib libssl-dev:i386
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y gcc-multilib g++-multilib libssl-dev:i386
       - name: Build
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_CXX_FLAGS="-m32" \
             -DCMAKE_C_FLAGS="-m32"
           cmake --build build
-      - name: Upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: lpm-linux-i386
-          path: build/lpm
 
   windows-amd64:
     runs-on: windows-latest
