@@ -28,6 +28,21 @@ bool is_lazy_installed() {
          std::filesystem::exists(base::nvPath.init_path);
 }
 
+bool is_nvim_installed() {
+#if defined(_WIN32) || defined(_WIN64)
+  return std::system("where nvim >nul 2>&1") == 0;
+#else
+  return std::system("which nvim > /dev/null 2>&1") == 0;
+#endif
+}
+void start_nvPath() {
+  base::nvPath.base_path = base::get_nvim_config_path();
+  base::nvPath.init_path = base::nvPath.base_path + "/init.lua";
+  base::nvPath.lua_path = base::nvPath.base_path + "/lua";
+  base::nvPath.config_path = base::nvPath.base_path + "/lua/config";
+  base::nvPath.plugins_path = base::nvPath.base_path + "/lua/plugins";
+}
+
 NvimConfigPath nvPath;
 
 } // namespace base

@@ -10,7 +10,7 @@
 namespace base {
 const std::string get_nvim_config_path();
 bool is_lazy_installed();
-
+bool is_nvim_installed();
 struct NvimConfigPath {
   std::string base_path;
   std::string init_path;
@@ -20,6 +20,7 @@ struct NvimConfigPath {
 };
 
 extern NvimConfigPath nvPath;
+void start_nvPath();
 
 } // namespace base
 

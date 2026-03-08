@@ -12,14 +12,23 @@ int main(int argn, char **argv) {
     return 0;
   }
 
+  if (!base::is_nvim_installed()) {
+    std::cout << "woops! neovim is not installed in your system!" << std::endl;
+    std::cout << "aborted" << std::endl;
+    return 1;
+  }
+  if (!base::is_lazy_installed()) {
+    std::cout << "woops! lazy package manager is not installed in your system!"
+              << std::endl;
+    if (!cli::msg_question("do you wanna install lazy on your system?")) {
+      std::cout << "aborted." << std::endl;
+      return 1;
+    }
+    commands::install_lazy();
+  }
+
   for (int i = 2; i < argn; i++)
     cli::main_args.push_back(argv[i]);
-
-  base::nvPath.base_path = base::get_nvim_config_path();
-  base::nvPath.init_path = base::nvPath.base_path + "/init.lua";
-  base::nvPath.lua_path = base::nvPath.base_path + "/lua";
-  base::nvPath.config_path = base::nvPath.base_path + "/lua/config";
-  base::nvPath.plugins_path = base::nvPath.base_path + "/lua/plugins";
 
   const std::unordered_map<std::string, std::function<void()>> simple_commands =
       {

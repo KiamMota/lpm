@@ -136,22 +136,6 @@ void install(std::vector<std::string> &commands) {
     cli::require_arg("install", "<github url>");
     return;
   }
-  bool is_lazy_command = commands.at(0) == "lazy";
-  if (!base::is_lazy_installed()) {
-    std::cout << "woops! you dont have lazy!" << std::endl;
-    try {
-      install_lazy();
-    } catch (std::exception const &ex) {
-      std::cout << "err: " << ex.what() << std::endl;
-      return;
-    }
-    std::cout << "done. try install your plugin again." << std::endl;
-    return;
-  }
-  if (is_lazy_command) {
-    std::cout << "lazy is already installed!" << std::endl;
-    return;
-  }
   std::string plugin_github_url = commands.at(0);
   size_t slash_pos = plugin_github_url.rfind('/');
   if (slash_pos == std::string::npos) {
