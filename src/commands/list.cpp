@@ -2,7 +2,6 @@
 #include "commands.hpp"
 #include <filesystem>
 #include <iostream>
-#include <vector>
 
 namespace commands {
 

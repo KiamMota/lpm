@@ -2,12 +2,14 @@
 #include "cli_base.hpp"
 #include "commands.hpp"
 #include "curl/curl.h"
+#include "fsio.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 static const std::string build_file_string(const char *github_url) {
@@ -175,36 +177,14 @@ void install(std::vector<std::string> &commands) {
   if (file_content.empty()) {
     file_content = build_file_string(plugin_github_url.c_str());
   }
-
-  std::ofstream file(filepath);
-  if (!file.is_open()) {
-    std::cout << "fail to open file: " << filepath << std::endl;
-    return;
+  try {
+    fsio::write_file(filepath, file_content);
+  } catch (const std::runtime_error &e) {
+    std::cout << e.what() << std::endl;
   }
-  file << file_content;
-  if (file.fail()) {
-    file.close();
-    std::filesystem::remove(filepath);
-    std::cout << "fail to write file: " << filepath << std::endl;
-    return;
-  }
-  file.close();
 
   std::cout << "installed!" << std::endl;
   std::cout << file_content << std::endl;
   std::cout << "created in: " << filepath << std::endl;
-
-  if (cli::msg_question("Do you want to insert it into init.lua ?")) {
-    try {
-      utils::insert_require_in_init_lua(
-          ("require('plugins." + plugin_name + "')").c_str());
-      std::cout << "done." << std::endl;
-    } catch (std::exception const &ex) {
-      std::cout << "Error: " << ex.what() << std::endl;
-      std::cout << "Rolling back..." << std::endl;
-      std::filesystem::remove(filepath);
-      std::cout << "Rollback complete." << std::endl;
-    }
-  }
 }
 } // namespace commands
