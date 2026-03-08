@@ -69,6 +69,10 @@ int main(int argn, char **argv) {
     commands::edit(cli::main_args);
     return 0;
   }
+  if (cmd == "sync") {
+    commands::sync();
+    return 0;
+  }
 
   std::cout << "unknown command: '" << cmd << "'\n" << std::endl;
   cli::help();

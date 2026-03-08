@@ -11,6 +11,7 @@ void remove(std::vector<std::string> &args);
 void cat(std::vector<std::string> &args);
 void edit(std::vector<std::string> &args);
 void able(std::vector<std::string> &args);
+void sync();
 void deactivate(std::vector<std::string> &args);
 void self_update();
 

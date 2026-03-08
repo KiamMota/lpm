@@ -132,6 +132,7 @@ static std::string resolve_plugin_name(const std::string &name) {
   std::replace(result.begin(), result.end(), '.', '-');
   return result;
 }
+
 namespace commands {
 void install(std::vector<std::string> &commands) {
   if (commands.empty()) {
@@ -150,11 +151,11 @@ void install(std::vector<std::string> &commands) {
   std::string filepath = base::nvPath.plugins_path + "/" + plugin_name + ".lua";
   std::cout << "resolved plugin filepath. (" << filepath << ")" << std::endl;
 
+  std::cout << "installing..." << std::endl;
   if (std::filesystem::exists(filepath)) {
     std::cout << "plugin already installed!" << std::endl;
     return;
   }
-  std::cout << "installing..." << std::endl;
   if (!github_url_exists(plugin_github_url)) {
     std::cout
         << "Error: Could not connect to the provided URL (Status Code: 404)."
@@ -184,7 +185,7 @@ void install(std::vector<std::string> &commands) {
   }
 
   std::cout << "installed!" << std::endl;
-  std::cout << file_content << std::endl;
+  sync();
   std::cout << "created in: " << filepath << std::endl;
 }
 } // namespace commands
