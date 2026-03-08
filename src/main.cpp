@@ -33,12 +33,11 @@ int main(int argn, char **argv) {
 
   const std::unordered_map<std::string,
                            std::function<void(std::vector<std::string> &)>>
-      arg_commands = {
-          {"install", commands::install},
-          {"remove", commands::remove},
-          {"activate", commands::activate},
-          {"deactivate", commands::deactivate},
-      };
+      arg_commands = {{"install", commands::install},
+                      {"remove", commands::remove},
+                      {"activate", commands::activate},
+                      {"deactivate", commands::deactivate},
+                      {"cat", commands::cat}};
 
   std::string cmd = argv[1];
 

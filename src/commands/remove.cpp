@@ -27,27 +27,8 @@ void remove(std::vector<std::string> &commands) {
     return;
   }
 
-  std::string chosen_path;
-
-  if (plugins_found.size() == 1) {
-    chosen_path = plugins_found.at(0);
-  } else {
-    std::cout << "multiple plugins found, pick one:" << std::endl;
-    for (size_t i = 0; i < plugins_found.size(); i++) {
-      std::string name =
-          std::filesystem::path(plugins_found.at(i)).stem().string();
-      std::cout << "  [" << i + 1 << "] " << name << std::endl;
-    }
-    std::cout << "> ";
-    size_t choice;
-    std::cin >> choice;
-    if (choice < 1 || choice > plugins_found.size()) {
-      std::cout << "invalid choice." << std::endl;
-      return;
-    }
-    chosen_path = plugins_found.at(choice - 1);
-  }
-
+  const std::string chosen_path =
+      utils::when_find_multiple_plugins(plugins_found);
   std::string plugin_name = std::filesystem::path(chosen_path).stem().string();
 
   if (!cli::msg_question("Remove '" + plugin_name + "'?"))
@@ -63,7 +44,6 @@ void remove(std::vector<std::string> &commands) {
   buffer << file_in.rdbuf();
   file_in.close();
   const std::string backup_content = buffer.str();
-
   // remove o arquivo .lua do plugin
   try {
     std::filesystem::remove(chosen_path);

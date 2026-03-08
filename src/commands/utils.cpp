@@ -8,6 +8,33 @@
 
 namespace commands {
 namespace utils {
+const std::string
+when_find_multiple_plugins(std::vector<std::string> &plugins_found) {
+
+  std::string chosen_path;
+
+  if (plugins_found.empty())
+    return {};
+  if (plugins_found.size() == 1) {
+    chosen_path = plugins_found.at(0);
+  } else {
+    std::cout << "multiple plugins found, pick one:" << std::endl;
+    for (size_t i = 0; i < plugins_found.size(); i++) {
+      std::string name =
+          std::filesystem::path(plugins_found.at(i)).stem().string();
+      std::cout << "  [" << i + 1 << "] " << name << std::endl;
+    }
+    std::cout << "> ";
+    size_t choice;
+    std::cin >> choice;
+    if (choice < 1 || choice > plugins_found.size()) {
+      std::cout << "invalid choice." << std::endl;
+      return {};
+    }
+    chosen_path = plugins_found.at(choice - 1);
+  }
+  return chosen_path;
+}
 void insert_require_in_init_lua(const std::string &content) {
   std::ifstream file_in(base::nvPath.init_path);
   if (!file_in.is_open())
