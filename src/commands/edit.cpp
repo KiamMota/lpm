@@ -53,7 +53,7 @@ void edit(std::vector<std::string> &args) {
   }
 
   std::string cmd = editor + " \"" + chosen_path + "\"";
-  std::system(cmd.c_str());
+  [[maybe_unused]] int result = std::system(cmd.c_str());
 }
 
 } // namespace commands
