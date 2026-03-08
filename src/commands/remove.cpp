@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 namespace commands {
 void remove(std::vector<std::string> &commands) {
   if (commands.empty()) {
