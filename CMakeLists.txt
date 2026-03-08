@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(lazynvimcli CXX)
+set(CMAKE_CXX_STANDARD 17)  
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -22,6 +24,10 @@ set(CURL_DISABLE_LDAP         ON  CACHE BOOL "" FORCE)
 set(CURL_DISABLE_LDAPS        ON  CACHE BOOL "" FORCE)
 add_subdirectory(third_party/curl)
 
+if(NOT TARGET libcurl_static)
+  message(FATAL_ERROR "libcurl_static not found. Check third_party/curl.")
+endif()
+
 file(GLOB_RECURSE SRC_FILES "src/*.cpp")
 set(CLI_NAME lpm)
 add_executable(${CLI_NAME} ${SRC_FILES})
@@ -30,9 +36,17 @@ target_include_directories(${CLI_NAME} PRIVATE
     include
 )
 target_link_libraries(${CLI_NAME} PRIVATE libcurl_static)
+
 if(WIN32)
   target_link_libraries(${CLI_NAME} PRIVATE ws2_32 wldap32 crypt32 normaliz)
+  set(CURL_USE_OPENSSL  OFF CACHE BOOL "" FORCE)
+  set(CURL_USE_SCHANNEL ON  CACHE BOOL "" FORCE)
 endif()
+
+if(UNIX)
+  set(CURL_USE_OPENSSL ON CACHE BOOL "" FORCE)
+endif()
+
 if(MSVC)
   target_compile_options(${CLI_NAME} PRIVATE /W4 /WX)
 else()
