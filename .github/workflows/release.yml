@@ -1,10 +1,8 @@
 name: Release
-
 on:
   push:
     tags:
       - 'v*'
-
 jobs:
   linux-amd64:
     runs-on: ubuntu-latest
@@ -12,6 +10,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Install dependencies
+        run: sudo apt-get install -y libssl-dev
       - name: Build
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release
@@ -28,9 +28,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Install i386 toolchain
-        run: |
-          sudo apt-get install -y gcc-multilib g++-multilib
+      - name: Install dependencies
+        run: sudo apt-get install -y gcc-multilib g++-multilib libssl-dev:i386
       - name: Build
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release \
@@ -51,7 +50,7 @@ jobs:
           submodules: recursive
       - name: Build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCURL_USE_SCHANNEL=ON -DCURL_USE_OPENSSL=OFF
           cmake --build build --config Release
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -67,7 +66,7 @@ jobs:
           submodules: recursive
       - name: Build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -A Win32
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -A Win32 -DCURL_USE_SCHANNEL=ON -DCURL_USE_OPENSSL=OFF
           cmake --build build --config Release
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -84,7 +83,8 @@ jobs:
       - name: Build
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_OSX_ARCHITECTURES=x86_64
+            -DCMAKE_OSX_ARCHITECTURES=x86_64 \
+            -DCURL_USE_SECTRANSP=ON -DCURL_USE_OPENSSL=OFF
           cmake --build build
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -101,7 +101,8 @@ jobs:
       - name: Build
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_OSX_ARCHITECTURES=arm64
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCURL_USE_SECTRANSP=ON -DCURL_USE_OPENSSL=OFF
           cmake --build build
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -116,7 +117,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/download-artifact@v4
-
       - name: Rename binaries
         run: |
           mv lpm-linux-amd64/lpm  lpm-linux-amd64
@@ -125,9 +125,7 @@ jobs:
           mv lpm-windows-i386/lpm.exe  lpm-windows-i386.exe
           mv lpm-macos-amd64/lpm  lpm-macos-amd64
           mv lpm-macos-arm64/lpm  lpm-macos-arm64
-          # cria o "lpm" genérico para o --self-update no linux amd64
           cp lpm-linux-amd64 lpm
-
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
