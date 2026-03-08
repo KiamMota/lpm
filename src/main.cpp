@@ -28,6 +28,7 @@ int main(int argn, char **argv) {
 
   if (!base::is_nvim_installed()) {
     std::cout << "woops! neovim is not installed in your system!" << std::endl;
+    std::cout << "install neovim to use lpm." << std::endl;
     return 1;
   }
 
