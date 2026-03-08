@@ -1,8 +1,10 @@
 name: Release
+
 on:
   push:
     tags:
       - 'v*'
+
 jobs:
   linux-amd64:
     runs-on: ubuntu-latest
@@ -22,7 +24,7 @@ jobs:
           name: lpm-linux-amd64
           path: build/lpm
 
-   linux-i386:
+  linux-i386:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,6 +41,11 @@ jobs:
             -DCMAKE_CXX_FLAGS="-m32" \
             -DCMAKE_C_FLAGS="-m32"
           cmake --build build
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: lpm-linux-i386
+          path: build/lpm
 
   windows-amd64:
     runs-on: windows-latest
