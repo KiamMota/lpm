@@ -44,16 +44,7 @@ void install_lazy() {
     // rollback
     if (std::filesystem::exists(lazy_file_path))
       std::filesystem::remove(lazy_file_path);
-
-    if (std::filesystem::exists(base::nvPath.plugins_path))
-      std::filesystem::remove(base::nvPath.plugins_path);
-
-    if (std::filesystem::exists(base::nvPath.config_path))
-      std::filesystem::remove(base::nvPath.config_path);
-
-    if (std::filesystem::exists(base::nvPath.lua_path))
-      std::filesystem::remove(base::nvPath.lua_path);
-
+    
     std::cerr << "Rollback complete.\n";
   }
 }
