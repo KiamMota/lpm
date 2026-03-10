@@ -17,4 +17,4 @@ func StartNeovimPath() NeovimPath {
 	return nvPath
 }
 
-var nvPath NeovimPath = StartNeovimPath()
+var NvPath NeovimPath = StartNeovimPath()

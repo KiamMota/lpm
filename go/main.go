@@ -1,5 +1,10 @@
 package main
 
+import "os"
+
 func main() {
-	println("hello, lpm!")
+	if len(os.Args) == 1 {
+
+	}
+
 }
