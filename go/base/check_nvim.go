@@ -6,5 +6,5 @@ import (
 
 func NeovimInstalled() bool {
 	_, err := exec.LookPath("nvim")
-	return err != nil
+	return err == nil
 }

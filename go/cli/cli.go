@@ -1,6 +1,9 @@
 package cli
 
-import "lpm/base"
+import (
+	"fmt"
+	"lpm/base"
+)
 
 func Help() {
 	print(`
@@ -34,4 +37,8 @@ examples:
 
 func Version() {
 	base.LpmLog(base.VersionStr(), base.Ok)
+}
+
+func Required(commandName string, arg string) {
+	fmt.Println(commandName, "requires", arg)
 }

@@ -20,5 +20,6 @@ func Remove(pluginName string) {
 			break
 		}
 	}
+	base.LazySync()
 
 }

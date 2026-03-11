@@ -8,6 +8,11 @@ import (
 )
 
 func main() {
+
+	if !base.NeovimInstalled() {
+		base.LpmLog("you dont have nvim in your system!", base.Err)
+	}
+
 	if len(os.Args) == 1 {
 		cli.Help()
 		return
@@ -24,6 +29,12 @@ func main() {
 		commands.List()
 		return
 	}
+
+	if cmd == "sync" {
+		commands.Sync()
+		return
+	}
+
 	if len(os.Args) == 2 {
 		base.LpmLog("not enough args!", base.Err)
 		return
@@ -33,6 +44,10 @@ func main() {
 	if cmd == "remove" {
 		commands.Remove(args[0])
 		return
+	}
+
+	if cmd == "install" {
+		commands.Install(args)
 	}
 
 }
