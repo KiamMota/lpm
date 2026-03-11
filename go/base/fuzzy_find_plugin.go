@@ -60,6 +60,9 @@ func FuzzyFindPlugin(pluginName string) []string {
 }
 
 func WhenMultiplePluginsFound(arr []string) string {
+	if len(arr) == 1 {
+		return arr[0]
+	}
 	LpmLog("multiple plugins found:", Warn)
 
 	for i, plugin := range arr {

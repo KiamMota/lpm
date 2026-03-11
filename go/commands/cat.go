@@ -1,5 +1,9 @@
 package commands
 
-func Cat(pluginName string) {
+import "lpm/base"
 
+func Cat(pluginName string) {
+	var pluginsFound []string = base.FuzzyFindPlugin(pluginName)
+	var selected string = base.WhenMultiplePluginsFound(pluginsFound)
+	base.LpmLog(selected, base.Ok)
 }

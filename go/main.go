@@ -50,4 +50,8 @@ func main() {
 		commands.Install(args)
 	}
 
+	if cmd == "cat" {
+		commands.Cat(args[0])
+	}
+
 }
