@@ -1,11 +1,20 @@
 package commands
 
 import (
+	"fmt"
 	"lpm/base"
+	"os"
 )
 
 func Cat(pluginName string) {
-	var pluginsFound []string = base.FuzzyFindPlugin(pluginName)
-	var selected string = base.WhenMultiplePluginsFound(pluginsFound)
-	println(selected)
+	pluginsFound := base.FuzzyFindPlugin(pluginName)
+	selected := base.WhenMultiplePluginsFound(pluginsFound)
+
+	content, err := os.ReadFile(selected)
+	if err != nil {
+		base.LpmLog("error reading file:"+err.Error(), base.Err)
+		return
+	}
+
+	fmt.Print(string(content))
 }
