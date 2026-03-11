@@ -7,15 +7,16 @@ const (
 )
 
 func LpmLog(msg string, logLevel int) {
+
 	switch logLevel {
 	case Ok:
-		println("lpm >>", msg)
+		println("lpm:", msg)
 		return
 	case Err:
-		println("lpm err >>", msg)
+		println("lpm err:", msg)
 		return
 	case Warn:
-		println("lpm warn >>", msg)
+		println("lpm warn:", msg)
 		return
 	}
 }

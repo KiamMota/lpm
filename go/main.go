@@ -54,4 +54,8 @@ func main() {
 		commands.Cat(args[0])
 	}
 
+	if cmd == "able" {
+		commands.Able(args[0])
+	}
+
 }
