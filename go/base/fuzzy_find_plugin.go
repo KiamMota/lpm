@@ -61,7 +61,7 @@ func FuzzyFindPlugin(pluginName string) []string {
 
 func WhenMultiplePluginsFound(arr []string) string {
 	if len(arr) == 1 {
-		return arr[0]
+		return filepath.Join(NvPath.PluginsPath + "/" + arr[0] + ".lua")
 	}
 	LpmLog("multiple plugins found:", Warn)
 
@@ -90,11 +90,13 @@ func WhenMultiplePluginsFound(arr []string) string {
 			continue
 		}
 
-		return arr[n-1]
+		abs := filepath.Join(NvPath.PluginsPath, arr[n-1]+".lua")
+		return abs
 	}
 }
 
 // normalize transforma string em lowercase e remove separadores comuns
+
 func normalize(s string) string {
 	s = strings.ToLower(s)
 	s = strings.Map(func(r rune) rune {
