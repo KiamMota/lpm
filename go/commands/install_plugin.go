@@ -116,7 +116,7 @@ func Install(commands []string) {
 		base.LpmLog(baseConfig, base.Ok)
 	}
 
-	base.LpmLog("find config!", base.Ok)
+	base.LpmLog("config found!", base.Ok)
 
 	base.LpmLog("installing plugin...", base.Ok)
 	file, fileErr := os.Create(plugin_path)
