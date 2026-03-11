@@ -16,7 +16,7 @@ func Remove(pluginName string) {
 		if entry.Name() == pluginName {
 			var absPluginPath string = filepath.Join(base.NvPath.PluginsPath, entry.Name())
 			os.Remove(absPluginPath)
-			println("removed", absPluginPath)
+			base.LpmLog("removed"+absPluginPath, base.Ok)
 			break
 		}
 	}
