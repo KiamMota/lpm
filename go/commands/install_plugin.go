@@ -94,7 +94,7 @@ func Install(commands []string) {
 
 	var plugin_github_name string = commands[0]
 	var plugin_name string = resolvePluginName(plugin_github_name)
-	var plugin_path string = base.NvPath.PluginsPath + "/" + plugin_name
+	var plugin_path string = base.NvPath.PluginsPath + "/" + plugin_name + ".lua"
 
 	if base.FileExists(plugin_path) {
 		base.LpmLog("plugin already installed!", base.Ok)
