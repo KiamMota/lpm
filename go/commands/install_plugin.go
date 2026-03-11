@@ -40,7 +40,7 @@ func resolvePluginName(name string) string {
 
 func Install(commands []string) {
 	if len(commands) == 0 {
-		cli.Required("install", "<github url><plugin name>")
+		cli.Required("install", "<github url>/<plugin name>")
 	}
 
 	var plugin_github_url string = resolvePluginName(commands[0])
