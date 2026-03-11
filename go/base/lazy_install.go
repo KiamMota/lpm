@@ -1,7 +1,6 @@
-package commands
+package base
 
 import (
-	"lpm/base"
 	"os"
 )
 
@@ -37,22 +36,22 @@ require("lazy").setup({
 
 func InstallLazy() {
 
-	base.LpmLog("lazy installation for lazy plugin manager...", base.Ok)
-	if !base.DirExists(base.NvPath.LuaPath + "/config") {
-		err := os.Mkdir(base.NvPath.LuaPath+"/config", 0755)
+	LpmLog("lazy installation for lazy plugin manager...", Ok)
+	if !DirExists(NvPath.LuaPath + "/config") {
+		err := os.Mkdir(NvPath.LuaPath+"/config", 0755)
 
 		if err != nil {
-			base.LpmLog(err.Error(), base.Err)
+			LpmLog(err.Error(), Err)
 			return
 		}
 	}
 
-	lazyFd, lazyFileErr := os.Create(base.NvPath.LuaPath + "/config/lazy.lua")
+	lazyFd, lazyFileErr := os.Create(NvPath.LuaPath + "/config/lazy.lua")
 	if lazyFileErr != nil {
-		base.LpmLog(lazyFileErr.Error(), base.Err)
+		LpmLog(lazyFileErr.Error(), Err)
 		return
 	}
 
 	lazyFd.WriteString(lazyBootstrap())
-	base.LpmLog("done.", base.Ok)
+	LpmLog("done.", Ok)
 }
