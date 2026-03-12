@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if command -v lpm &>/dev/null; then
+  echo "old lpm found, removing..."
+  sudo rm -f $(which lpm)
+fi
+
 go build .
 go install ./cmd/lpm
 

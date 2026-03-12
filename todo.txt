@@ -1,3 +1,0 @@
-able command
-edit command
-build to windows
