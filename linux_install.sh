@@ -5,8 +5,7 @@ if command -v lpm &>/dev/null; then
   sudo rm -f $(which lpm)
 fi
 
-go build .
-go install ./cmd/lpm
+go install
 
 if ! echo $PATH | grep -q "$HOME/go/bin"; then
   echo 'export PATH=$HOME/go/bin:$PATH' >>~/.zshrc
