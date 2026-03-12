@@ -25,6 +25,11 @@ func main() {
 		return
 	}
 
+	if cmd == "-f" || cmd == "--fetch" {
+		cli.Fetch()
+		return
+	}
+
 	if cmd == "list" {
 		commands.List()
 		return
@@ -41,7 +46,7 @@ func main() {
 	}
 	var args []string = os.Args[2:]
 
-	if cmd == "remove" {
+	if cmd == "remove" || cmd == "uninstall" {
 		commands.Remove(args[0])
 		return
 	}
