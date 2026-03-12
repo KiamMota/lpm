@@ -112,11 +112,12 @@ func Install(commands []string) {
 	var baseConfig string = fallbackConfig(plugin_name)
 
 	if pluginConfigErr != nil {
-		base.LpmLog("config not find! inserting fallback config...", base.Ok)
-		base.LpmLog(baseConfig, base.Ok)
-	}
+		base.LpmLog("config not found! inserting fallback config...", base.Ok)
+		fileContent = baseConfig
+	} else {
+		base.LpmLog("config found!", base.Ok)
 
-	base.LpmLog("config found!", base.Ok)
+	}
 
 	base.LpmLog("installing plugin...", base.Ok)
 	file, fileErr := os.Create(plugin_path)

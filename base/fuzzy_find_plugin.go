@@ -60,7 +60,7 @@ func FuzzyFindPlugin(pluginName string) []string {
 }
 
 func WhenMultiplePluginsFound(arr []string) string {
-	if len(arr) == 1 {
+	if len(arr) == 1 || len(arr) == 0 {
 		return filepath.Join(NvPath.PluginsPath + "/" + arr[0] + ".lua")
 	}
 	LpmLog("multiple plugins found:", Warn)
