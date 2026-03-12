@@ -23,7 +23,7 @@
 
 # Installation
 
-### Homebrew (macOS/Linux)
+## Homebrew (macOS/Linux)
 ```bash
 brew tap KiamMota/lpm
 brew install lpm
@@ -34,7 +34,7 @@ brew install lpm
 curl -fsSL https://raw.githubusercontent.com/KiamMota/lpm/main/linux_install.sh | sh
 ```
 
-### From source
+## From source
 
 Requirements: [Go 1.21+](https://go.dev/dl/)
 ```bash
