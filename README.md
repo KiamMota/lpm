@@ -1,42 +1,8 @@
 # lpm — Lazy Plugin Manager
 
-> **The missing CLI for lazy.nvim.** Install, remove, and manage Neovim plugins from your terminal — no more hand-writing Lua configs.
+**The CLI for lazy.nvim.** manage lazy.nvim plugins from your terminal.
 
 ![lpm fetch](assets/demo-lpm-go.gif)
-
----
-
-## Demo
-
-### Installing a plugin
-![lpm install demo](assets/lpm-demo.gif)
-
-### Installing nvim-tree
-![lpm nvim-tree install](assets/demo-lpm-nvim-tree-able.gif)
-
-### Removing a plugin
-![lpm remove demo](assets/demo-lpm-nvim-tree-remove.gif)
-
----
-
-## Why lpm?
-
-Managing plugins with lazy.nvim means manually creating `.lua` files, writing boilerplate, and remembering the exact repo path. **lpm automates all of that.**
-
-- 🔌 One command to install any plugin from GitHub
-- 🗂️ Each plugin gets its own isolated `.lua` file
-- 🔍 Fuzzy search — you don't need the exact plugin name
-- 📋 Curated configs for popular plugins out of the box
-- ⚡ Auto-syncs with lazy.nvim after every change
-
----
-
-## Installation
-
-```bash
-cmake -B build && cmake --build build
-sudo cmake --install build
-```
 
 ---
 
@@ -48,14 +14,35 @@ sudo cmake --install build
 | `lpm remove <plugin>` | Delete plugin config file |
 | `lpm able <plugin>` | Enable/disable a plugin (toggle) |
 | `lpm cat <plugin>` | Print plugin config to terminal |
-| `lpm edit <plugin>` | Open plugin config in `$EDITOR` |
 | `lpm list` | List installed plugins |
-| `lpm --self-update` / `-u` | Update lpm to the latest version |
 | `lpm --version` / `-v` | Show version |
+| `lpm --fetch` / `-f`| Fetch Lpm |
 
-> All commands that take a plugin name support **fuzzy search** — you don't need the exact name.
+> [!NOTE]
+> All commands that take a plugin name (`remove`, `able`, `cat`, `edit`) use robust fuzzy matching (you never need to type the exact plugin name.)
 
----
+# Installation
+
+### Homebrew (macOS/Linux)
+```bash
+brew tap KiamMota/lpm
+brew install lpm
+```
+
+## Fast Installation (Linux)
+``` bash
+curl -fsSL https://raw.githubusercontent.com/KiamMota/lpm/main/linux_install.sh | sh
+```
+
+### From source
+
+Requirements: [Go 1.21+](https://go.dev/dl/)
+```bash
+git clone https://github.com/KiamMota/lpm
+cd lpm
+go install ./cmd/lpm
+```
+
 
 ## How it works
 
@@ -83,39 +70,27 @@ After any change, open Neovim and run `:Lazy sync` to apply.
 
 ---
 
-## Examples
+## Demo
 
-```bash
-# install a plugin
-lpm install https://github.com/folke/snacks.nvim
+### Installing a plugin
+![lpm install demo](assets/lpm-demo.gif)
 
-# check the generated config
-lpm cat snacks
+### Installing nvim-tree
+![lpm nvim-tree install](assets/demo-lpm-nvim-tree-able.gif)
 
-# edit the config manually
-lpm edit snacks
+### Removing a plugin
+![lpm remove demo](assets/demo-lpm-nvim-tree-remove.gif)
 
-# disable without removing
-lpm able snacks
+---
 
-# re-enable it
-lpm able snacks
-
-# remove for good
-lpm remove snacks
-
-# see what's installed
-lpm list
-
-# update lpm itself
-lpm --self-update
-```
+- 🔌 One command to install any plugin from GitHub
+- 🗂️ Each plugin gets its own isolated `.lua` file
+- 🔍 Fuzzy search — you don't need the exact plugin name
+- 📋 Curated configs for popular plugins out of the box
+- ⚡ Auto-syncs with lazy.nvim after every change
 
 ---
 
 ## Requirements
 
 - Neovim with [lazy.nvim](https://github.com/folke/lazy.nvim) configured
-- Plugins folder at:
-  - **Linux/Mac:** `~/.config/nvim/lua/plugins/`
-  - **Windows:** `%LOCALAPPDATA%\nvim\lua\plugins\`
