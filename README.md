@@ -2,12 +2,7 @@
 
 > **The missing CLI for lazy.nvim.** Install, remove, and manage Neovim plugins from your terminal — no more hand-writing Lua configs.
 
-```bash
-lpm install https://github.com/nvim-tree/nvim-tree.lua
-# ✓ resolved plugin name. (nvim-tree)
-# ✓ installed!
-# ✓ syncing...
-```
+![lpm fetch](assets/demo-lpm-go.gif)
 
 ---
 
