@@ -11,7 +11,7 @@ func List() {
 		base.LpmLog(err.Error(), base.Err)
 	}
 
-	base.LpmLog("plugins for '"+base.NvPath.PluginsPath+":", base.Ok)
+	base.LpmLog("plugins for '"+base.NvPath.PluginsPath+"':", base.Ok)
 	for _, entr := range entries {
 		if entr.Type().IsRegular() {
 			println("-- ", entr.Name())
