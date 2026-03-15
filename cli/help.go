@@ -12,13 +12,12 @@ commands:
   remove     <plugin>       delete plugin config file
   able       <plugin>       toggle enabled in plugin config
   cat        <plugin>       print plugin config
-  edit       <plugin>       open plugin config in $EDITOR
-  edit       <plugin> --nvim   open plugin config in nvim
   list                      list installed plugins
   sync                      run :Lazy sync headless
 
 flags:
   -v, --version             show version
+	-f, --fetch               like onefetch
   -u, --self-update         update lpm
   -h, --help                show this message
 
