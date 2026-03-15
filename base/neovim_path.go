@@ -2,6 +2,7 @@ package base
 
 import (
 	"os"
+	"path/filepath"
 )
 
 type NeovimPath struct {
@@ -13,8 +14,13 @@ type NeovimPath struct {
 
 func StartNeovimPath() NeovimPath {
 	confDir, _ := os.UserConfigDir()
-	var basePath string = confDir + "/nvim"
-	nvPath := NeovimPath{BasePath: basePath, LuaPath: basePath + "/lua", InitLuaPath: basePath + "/init.lua", PluginsPath: basePath + "/lua/plugins"}
+	var basePath string = filepath.Join(confDir, "nvim")
+	nvPath := NeovimPath{
+		BasePath:    basePath,
+		LuaPath:     filepath.Join(basePath, "lua"),
+		InitLuaPath: filepath.Join(basePath, "init.lua"),
+		PluginsPath: filepath.Join(basePath, "lua", "plugins"),
+	}
 	return nvPath
 }
 
