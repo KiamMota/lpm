@@ -17,7 +17,7 @@ commands:
 
 flags:
   -v, --version             show version
-	-f, --fetch               show infos about your environment 
+	-f, --fetch               show infos about lpm 
   -u, --self-update         update lpm
   -h, --help                show this message
 

@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"io"
 	"lpm/base"
 	"lpm/cli"
@@ -55,38 +56,37 @@ func resolvePluginName(name string) string {
 }
 
 func installRecommendedPluginConfig(pluginName string) (string, error) {
-	var url string = "https://raw.githubusercontent.com/KiamMota/lpm/main/plugins_config/" + pluginName + ".lua"
+	url := "https://raw.githubusercontent.com/KiamMota/lpm/main/plugins_config/" + pluginName + ".lua"
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", err
 	}
-
 	req.Header.Set("User-Agent", "lpm-go/1.0")
-	client := &http.Client{}
 
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}
-
 	defer resp.Body.Close()
 
-	if resp.StatusCode == 404 {
-		return "", nil
+	switch resp.StatusCode {
+	case 200:
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return "", err
+		}
+		if len(strings.TrimSpace(string(body))) == 0 {
+			return "", fmt.Errorf("config file is empty")
+		}
+		return string(body), nil
+	case 404:
+		return "", fmt.Errorf("no recommended config found for plugin '%s'", pluginName)
+	default:
+		return "", fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
-	if resp.StatusCode != 200 {
-		return "net err", nil
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(body), nil
-
 }
-
 func Install(commands []string) {
 	if len(commands) == 0 {
 		cli.Required("install", "<github url>/<plugin name>")
