@@ -2,4 +2,4 @@ b/
 build/
 .cache/
 compile_commands.json
-
+CHANGELOG.md
